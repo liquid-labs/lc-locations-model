@@ -1,7 +1,7 @@
 {
   "name": "@liquid-labs/lc-locations-model",
   "version": "1.0.0-alpha.0",
-  "description": "A standard model (physical) location model for Liquid Code + compatible projects (in go).",
+  "description": "A standard geographic location model in Go for Liquid Code + compatible projects.",
   "scripts": {
     "prebuild": "rm -rf ./dist/* && mkdir -p ./dist",
     "build": "catalyst-scripts build",
