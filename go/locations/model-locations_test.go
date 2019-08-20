@@ -5,8 +5,9 @@ import (
   "reflect"
   "testing"
 
-  "github.com/Liquid-Labs/lc-entities-model/go/entities"
   "github.com/stretchr/testify/assert"
+
+  . "github.com/Liquid-Labs/lc-entities-model/go/entities"
 
   // the package we're testing
   . "github.com/Liquid-Labs/lc-locations-model/go/locations"
@@ -14,7 +15,7 @@ import (
 
 func TestLocationsClone(t *testing.T) {
   orig := &Location{
-    entities.InternalID(1),
+    *NewEntity(ResName, `A place`, ``, EID(0), true),
     `a`,
     `b`,
     `c`,
@@ -24,10 +25,11 @@ func TestLocationsClone(t *testing.T) {
     sql.NullFloat64{3.0, true},
     []string{`f`, `g`},
   }
+  orig.ID = EID(1)
   clone := orig.Clone()
   assert.Equal(t, orig, clone, "Clone does not match.")
 
-  clone.LocationID = entities.InternalID(2)
+  clone.ID = EID(2)
   clone.Address1 = `z`
   clone.Address2 = `y`
   clone.City = `x`

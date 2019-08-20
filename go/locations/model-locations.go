@@ -9,28 +9,67 @@ import (
   "bytes"
   "database/sql"
   "errors"
-  "strconv"
-  "strings"
 
-  "github.com/Liquid-Labs/lc-entities-model/go/entities"
+  . "github.com/Liquid-Labs/lc-entities-model/go/entities"
 )
 
+const ResName = ResourceName(`locations`)
+
 type Location struct {
-  LocationID entities.InternalID `json:"locationId"`
-  Address1   string              `json:"address1"`
-  Address2   string              `json:"address2"`
-  City       string              `json:"city"`
-  State      string              `json:"state"`
-  Zip        string              `json:"zip,string"`
-  Lat        sql.NullFloat64     `json:"lat",pg:",use_zero"`
-  Lng        sql.NullFloat64     `json:"lng",pg:",use_zero"`
-  ChangeDesc []string            `json:"changeDesc,omitempty",sql:"-"`
+  Entity
+  Address1   string          `json:"address1"`
+  Address2   string          `json:"address2"`
+  City       string          `json:"city"`
+  State      string          `json:"state"`
+  Zip        string          `json:"zip,string"`
+  Lat        sql.NullFloat64 `json:"lat",pg:",use_zero"`
+  Lng        sql.NullFloat64 `json:"lng",pg:",use_zero"`
+  ChangeDesc []string        `json:"changeDesc,omitempty" sql:"-"`
 }
+
+func NewLocation(
+    name             string,
+    desc             string,
+    ownerID          EID,
+    publiclyReadable bool,
+    address1         string,
+    address2         string,
+    city             string,
+    state            string,
+    zip              string) *Location {
+  return &Location{
+    *NewEntity(ResName, name, desc, ownerID, publiclyReadable),
+    address1, address2, city, state, zip,
+    sql.NullFloat64{Valid:false}, sql.NullFloat64{Valid:false}, nil}
+}
+
+func (l *Location) GetResourceName() ResourceName { return ResName }
+
+func (l *Location) GetID() EID { return l.ID }
+
+func (l *Location) GetAddress1() string { return l.Address1 }
+func (l *Location) SetAddress1(a1 string) { l.Address1 = a1 }
+
+func (l *Location) GetAddress2() string { return l.Address2 }
+func (l *Location) SetAddress2(a2 string) { l.Address2 = a2 }
+
+func (l *Location) GetCity() string { return l.City }
+func (l *Location) SetCity(c string) { l.City = c }
+
+func (l *Location) GetState() string { return l.State }
+func (l *Location) SetState(s string) { l.State = s }
+
+func (l *Location) GetZip() string { return l.Zip }
+func (l *Location) SetZip(z string) { l.Zip = z }
+
+func (l *Location) GetLat() sql.NullFloat64 { return l.Lat }
+
+func (l *Location) GetLng() sql.NullFloat64 { return l.Lng }
 
 func (loc *Location) Clone() *Location {
   newChangeDesc := make([]string, len(loc.ChangeDesc))
   copy(newChangeDesc, loc.ChangeDesc)
-  return &Location{loc.LocationID, loc.Address1, loc.Address2, loc.City, loc.State, loc.Zip, loc.Lat, loc.Lng, newChangeDesc}
+  return &Location{*(&loc.Entity).Clone(), loc.Address1, loc.Address2, loc.City, loc.State, loc.Zip, loc.Lat, loc.Lng, newChangeDesc}
 }
 
 func (loc *Location) requiredAddressComponents() ([]string) {
@@ -109,36 +148,4 @@ func (loc *Location) IsLatLngEmpty() (bool) {
     }
   }
   return true
-}
-
-type Address struct {
-  Location
-  IDX      int64  `json:"idx"`
-  Label    string `json:"label"`
-}
-
-func (add *Address) Clone() *Address {
-  return &Address{*add.Location.Clone(), add.IDX, add.Label}
-}
-
-type Addresses []*Address
-
-func (adds *Addresses) Clone() *Addresses {
-  clone := make(Addresses, len(*adds))
-  for i, add := range *adds {
-    clone[i] = add.Clone()
-  }
-
-  return &clone
-}
-
-func (adds *Addresses) PromoteChanges(changeDescs []string) ([]string) {
-  for i, address := range *adds {
-    for _, changeDesc := range address.ChangeDesc {
-      changeDesc = strings.TrimSuffix(changeDesc, `.`) + ` on address ` + strconv.Itoa(i + 1) + `.`
-      changeDescs = append(changeDescs, changeDesc)
-    }
-  }
-
-  return changeDescs
 }
