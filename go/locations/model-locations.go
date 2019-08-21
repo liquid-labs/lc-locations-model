@@ -13,7 +13,7 @@ import (
   . "github.com/Liquid-Labs/lc-entities-model/go/entities"
 )
 
-const ResName = ResourceName(`locations`)
+const LocationResName = ResourceName(`locations`)
 
 type Location struct {
   Entity
@@ -38,14 +38,10 @@ func NewLocation(
     state            string,
     zip              string) *Location {
   return &Location{
-    *NewEntity(ResName, name, desc, ownerID, publiclyReadable),
+    *NewEntity(LocationsResName, name, desc, ownerID, publiclyReadable),
     address1, address2, city, state, zip,
     sql.NullFloat64{Valid:false}, sql.NullFloat64{Valid:false}, nil}
 }
-
-func (l *Location) GetResourceName() ResourceName { return ResName }
-
-func (l *Location) GetID() EID { return l.ID }
 
 func (l *Location) GetAddress1() string { return l.Address1 }
 func (l *Location) SetAddress1(a1 string) { l.Address1 = a1 }
