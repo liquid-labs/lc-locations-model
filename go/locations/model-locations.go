@@ -21,9 +21,9 @@ type Location struct {
   Address2   string          `json:"address2"`
   City       string          `json:"city"`
   State      string          `json:"state"`
-  Zip        string          `json:"zip,string"`
-  Lat        sql.NullFloat64 `json:"lat",pg:",use_zero"`
-  Lng        sql.NullFloat64 `json:"lng",pg:",use_zero"`
+  Zip        string          `json:"zip"`
+  Lat        sql.NullFloat64 `json:"lat" pg:",use_zero"`
+  Lng        sql.NullFloat64 `json:"lng" pg:",use_zero"`
   ChangeDesc []string        `json:"changeDesc,omitempty" sql:"-"`
 }
 
