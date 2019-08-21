@@ -17,7 +17,10 @@ func (a *Addresses) gatherQueries(f queriesCallback) []*orm.Query {
 }
 
 func (a *Addresses) CreateQueries(db orm.DB) []*orm.Query {
-  return a.gatherQueries(func (a *Address, i int) []*orm.Query { return a.createQueries(db, i) })
+  f := func (a *Address, i int) []*orm.Query {
+    return a.createQueries(db, i)
+  }
+  return a.gatherQueries(f)
 }
 
 // Addresses, as a group, are currently updated by deleting and clearing
@@ -38,6 +41,9 @@ func (a *Addresses) RetrieveByIDRaw(id EID, db orm.DB) error {
 }
 
 // A single Address is not directly managed. Management is at the Addresses level.
+func (a *Address) CreateQueries(db orm.DB) []*orm.Query {
+  panic("Do not crete Addresses directly. Use Addresses to manage.")
+}
 
 func (a *Address) createQueries(db orm.DB, i int) []*orm.Query {
   return append((&a.Location).CreateQueries(db),
@@ -56,9 +62,13 @@ func (a *Address) UpdateQueries(db orm.DB) []*orm.Query {
   return append(qs, q)
 }
 
-// only delete the address part, not location
+func (a *Address) DeleteQueries(db orm.DB) []*orm.Query {
+  panic("Do not crete Addresses directly. Use Addresses to manage.")
+}
+
 func (a *Address) deleteQueries(db orm.DB) []*orm.Query {
   q := db.Model(a).Where(`"address".id=?id`).Where(`"address".entity_id=?entity_id`)
   q.GetModel().Table().SoftDeleteField = nil
-  return []*orm.Query { q }
+  qs := []*orm.Query{ q }
+  return append(qs, (&a.Location).DeleteQueries(db)...)
 }
