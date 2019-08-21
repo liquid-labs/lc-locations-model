@@ -40,8 +40,7 @@ func (l *Location) DeleteQueries(db orm.DB) []*orm.Query {
     ExcludeColumn(EntityFields...).
     Where(`"location".id=?id`)
   q.GetModel().Table().SoftDeleteField = nil
-  qs := make([]*orm.Query, 0)
-  qs[0] = q
+  qs := []*orm.Query{q}
 
   return append(qs, (&l.Entity).DeleteQueries(db)...)
 }
