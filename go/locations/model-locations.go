@@ -13,7 +13,7 @@ import (
   . "github.com/Liquid-Labs/lc-entities-model/go/entities"
 )
 
-const LocationResName = ResourceName(`locations`)
+const LocationsResName = ResourceName(`locations`)
 
 type Location struct {
   Entity
