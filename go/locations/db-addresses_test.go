@@ -89,3 +89,20 @@ func (s *AddressesIntegrationSuite) TestAddressUpdate() {
   require.NoError(s.T(), err)
   assert.Equal(s.T(), as, asCopy)
 }
+
+func (s *AddressesIntegrationSuite) TestAddressDelete() {
+  a := NewAddress(`someplace`, `desc`, EID(``), true, `100 Main Str`, `#B`, `City`, `TX`, `78388`, s.U.GetID(), `home`)
+  as := &Addresses{a}
+  require.NoError(s.T(), s.IM.CreateRaw(as))
+  var e1, l1, a1, e2, l2, a2 int
+  rdb.Connect().Query(&e1, "SELECT COUNT(*) FROM entities")
+  rdb.Connect().Query(&l1, "SELECT COUNT(*) FROM locations")
+  rdb.Connect().Query(&a1, "SELECT COUNT(*) FROM addresses")
+  require.NoError(s.T(), s.IM.DeleteRaw(as))
+  rdb.Connect().Query(&e2, "SELECT COUNT(*) FROM entities")
+  rdb.Connect().Query(&l2, "SELECT COUNT(*) FROM locations")
+  rdb.Connect().Query(&a2, "SELECT COUNT(*) FROM addresses")
+  assert.Equal(s.T(), e1 - 1, e2)
+  assert.Equal(s.T(), l1 - 1, l2)
+  assert.Equal(s.T(), a1 - 1, a2)
+}
