@@ -4,8 +4,6 @@ import (
   "os"
   "testing"
 
-  // "github.com/go-pg/go/pg/orm"
-
   "github.com/stretchr/testify/assert"
   "github.com/stretchr/testify/require"
   "github.com/stretchr/testify/suite"
