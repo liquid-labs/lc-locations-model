@@ -30,7 +30,7 @@ type AddressesIntegrationSuite struct {
   U  *User
 }
 func (s *AddressesIntegrationSuite) SetupSuite() {
-  s.IM = NewItemManager(rdb.Connect())
+  s.IM = ConnectItemManager()
   s.IM.AllowUnsafeStateChange = true
   s.U = NewUser(`users`, `test user`, `foo`, strkit.RandString(strkit.LettersAndNumbers, 16), `444-45-3232`, `SSN`, true)
   require.NoError(s.T(), s.IM.CreateRaw(s.U))

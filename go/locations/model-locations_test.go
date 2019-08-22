@@ -15,7 +15,7 @@ import (
 
 func TestLocationsClone(t *testing.T) {
   orig := &Location{
-    *NewEntity(ResName, `A place`, ``, EID(0), true),
+    *NewEntity(LocationsResName, `A place`, ``, EID(0), true),
     `a`,
     `b`,
     `c`,

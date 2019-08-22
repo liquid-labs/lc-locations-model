@@ -65,7 +65,7 @@ func (l *Location) GetLng() sql.NullFloat64 { return l.Lng }
 func (loc *Location) Clone() *Location {
   newChangeDesc := ([]string)(nil)
   if loc.ChangeDesc != nil {
-    newChangeDesc := make([]string, len(loc.ChangeDesc))
+    newChangeDesc = make([]string, len(loc.ChangeDesc))
     copy(newChangeDesc, loc.ChangeDesc)
   }
   return &Location{*(&loc.Entity).Clone(), loc.Address1, loc.Address2, loc.City, loc.State, loc.Zip, loc.Lat, loc.Lng, newChangeDesc}
